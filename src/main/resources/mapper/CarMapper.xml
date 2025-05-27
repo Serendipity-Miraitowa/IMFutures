@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTO Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.imfutures.mapper.CarMapper">
+
+    <!--查询车辆详情-->
+    <select id="selectCar" parameterType="java.lang.Integer" resultType="car">
+        select * from car where user_id = #{uid}
+    </select>
+
+    <!--获取单个设备的链接参数-->
+    <select id="selectConnect" parameterType="java.lang.String" resultType="car">
+        select * from car where frame_number = #{frameNumber}
+    </select>
+
+    <!--添加车辆-->
+    <insert id="insertCar" parameterType="org.example.imfutures.dto.InsertCar">
+        insert into car
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            type,
+            frame_number,
+            user_id,
+            status,
+            clientId,
+            password,
+            img
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            #{type},
+            #{frameNumber},
+            #{userId},
+            #{status},
+            #{clientId},
+            #{password},
+            #{img}
+        </trim>
+    </insert>
+
+    <!--删除连接-->
+    <delete id="deleteCar" parameterType="java.lang.Integer">
+        delete from car where id = #{id}
+    </delete>
+
+    <!--查询是否有车辆-->
+    <select id="selectCarIsHaving" parameterType="java.lang.String" resultType="java.lang.Boolean">
+        select exists(select 1 from car where frame_number = #{frameNumber})
+    </select>
+
+</mapper>

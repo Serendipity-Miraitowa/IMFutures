@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTO Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.example.imfutures.mapper.ShipMapper">
+
+    <!--查询所有商店-->
+    <select id="selectShip" parameterType="java.lang.String" resultType="org.example.imfutures.dto.ChargingStations">
+        select * from charging_stations
+        <where>
+            <if test="name != null and name.length != 0">
+               and name like concat('%', #{name}, '%')
+            </if>
+        </where>
+    </select>
+
+    <!--查询所有充电桩-->
+    <select id="selectPies" parameterType="java.lang.Integer" resultType="ChargingPies">
+        select * from charging_pies where charging_station_id = ${id}
+    </select>
+
+</mapper>

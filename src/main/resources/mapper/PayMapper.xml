@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTO Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.imfutures.mapper.PayMapper">
+
+    <!--查询支付账单-->
+    <select id="selectPay" parameterType="java.lang.Integer" resultType="org.example.imfutures.pojo.Pay">
+        select * from pay where user_id = #{uid}
+    </select>
+
+    <!--查询充电站id根据支付账单-->
+    <select id="select" parameterType="java.lang.Integer" resultType="org.example.imfutures.pojo.Pay">
+        select * from pay where charging_station_id = #{id}
+    </select>
+
+    <!--删除支付账单-->
+    <delete id="delete" parameterType="java.lang.Integer">
+        delete from pay where user_id = #{uid}
+    </delete>
+
+    <!--查询支付账单详情-->
+    <select id="selectDetail" parameterType="java.lang.Integer" resultType="org.example.imfutures.pojo.Pay">
+        select * from pay where id = #{id}
+    </select>
+
+    <!--添加支付账单-->
+    <insert id="addPay" parameterType="org.example.imfutures.pojo.Pay">
+        insert into pay(charging_station_id, charging_pies_id, user_id, date, amount, serial_no, pay_way, charging_time,
+                        order_id, time)
+        values (#{chargingStationId}, #{chargingPieId}, #{userId}, #{date}, #{amount}, #{serialNo}, #{payWay},
+                #{chargingTime}, #{orderId}, #{time})
+    </insert>
+
+    <!--更新订单状态-->
+    <update id="updateOrder" parameterType="java.lang.Integer">
+        update `order` set pay_status = 1 where id = #{id}
+    </update>
+
+    <!--支付方式查询-->
+    <select id="payWayList" parameterType="java.lang.Integer" resultType="java.lang.String">
+        select name from user_pay_way where user_id = #{uid}
+    </select>
+
+    <!--根据用户id和充电站id查询充电订单-->
+    <select id="payList" parameterType="org.example.imfutures.dto.PayList" resultType="pay">
+        select * from pay where user_id = #{uid} and charging_station_id = #{chargingStationId}
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTO Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.imfutures.mapper.LoginMapper">
+
+    <!--注册-->
+    <insert id="register" parameterType="org.example.imfutures.dto.loginAndRegister.Register" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid">
+        insert into users
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            user_name,
+            password,
+            salt,
+            phone,
+            email,
+            avatar,
+            sex,
+            status
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            #{userName},
+            #{password},
+            #{salt},
+            #{phone},
+            #{email},
+            #{avatar},
+            #{sex},
+            #{status}
+        </trim>
+    </insert>
+
+    <!--查询是否有账号-->
+    <select id="isHaveAccount" parameterType="org.example.imfutures.dto.loginAndRegister.Login" resultType="java.lang.Long">
+        select uid from users where phone = #{phone}
+    </select>
+
+    <!--查询密码-->
+    <select id="isTrue" parameterType="org.example.imfutures.dto.loginAndRegister.Login" resultType="users">
+        select password, salt from users where phone = #{phone}
+    </select>
+
+    <!--登录-->
+    <select id="login" parameterType="org.example.imfutures.dto.loginAndRegister.Login" resultType="users">
+        select uid, user_name, phone, card_id, email, avatar, sex, status from users where phone = #{phone}
+    </select>
+
+    <!--修改密码-->
+    <update id="updatePassword" parameterType="org.example.imfutures.dto.loginAndRegister.UpdatePassword">
+        update users set password = #{password}, salt = #{salt}, update_date = #{updateDate} where phone = #{phone}
+    </update>
+
+</mapper>
