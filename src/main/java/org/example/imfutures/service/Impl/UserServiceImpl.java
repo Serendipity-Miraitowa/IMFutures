@@ -1,5 +1,8 @@
 package org.example.imfutures.service.Impl;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.example.imfutures.dto.Cards;
 import org.example.imfutures.dto.UpdateUser;
 import org.example.imfutures.mapper.UserMapper;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+@Data
 @Service
 public class UserServiceImpl implements UserService {
 
