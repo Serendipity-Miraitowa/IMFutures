@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 public class MQTTConnectUtils {
 
-    private final static String address = "SSL://99fbda0a9a.st1.iotda-device.cn-north-4.myhuaweicloud.com:8883";
+    private final static String address = "SSL://url";
 
     MqttClient client;
 
