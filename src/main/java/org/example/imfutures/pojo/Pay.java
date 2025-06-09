@@ -1,143 +1,47 @@
 package org.example.imfutures.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.util.Date;
 
 //支付账单实体类
 @Data
+@Schema(name = "支付账单实体类")
 public class Pay {
+
+    @Schema(name = "账单id", description = "账单唯一标识",example = "1")
     private Integer id;  //账单id
+
+    @Schema(name = "用户id", description = "用户id", example = "1")
     private Integer userId; //用户id
+
+    @Schema(name = "充电站", description = "关联充电站", example = "1")
     private Integer chargingStationId; //充电站
+
+    @Schema(name = "充电桩", description = "关联充电桩id", example = "1")
     private Integer chargingPieId;  //充电桩id
+
+    @Schema(name = "账单号", description = "账单号", example = "4598415641489456")
     private String serialNo;  //账单号
+
+    @Schema(name = "支付方式", description = "支付方式", example = "微信支付")
     private String payWay;  //支付方式
+
+    @Schema(name = "充电时间", description = "充电时间", example = "1h36m")
     private String chargingTime; //充电时间
+
+    @Schema(name = "订单id", description = "关联预定订单id",example = "1")
     private Integer orderId; //订单id
+
+    @Schema(name = "账单日期", description = "账单日期", example = "2025-06-10")
     private Date date; //账单日期
+
+    @Schema(name = "订单金额订单金额", description = "充电账单应支付金额", example = "256.15")
     private double amount; //订单金额
+
+    @Schema(name = "开始充电的时间", description = "开始充电的时间", example = "16:06:36")
     private String time; //开始充电的时间
 
-    public Pay() {
-    }
 
-    public Pay(Integer id, Integer userId, Integer chargingStationId, Integer chargingPieId, String serialNo, String payWay, String chargingTime, Integer orderId, Date date, double amount, String time) {
-        this.id = id;
-        this.userId = userId;
-        this.chargingStationId = chargingStationId;
-        this.chargingPieId = chargingPieId;
-        this.serialNo = serialNo;
-        this.payWay = payWay;
-        this.chargingTime = chargingTime;
-        this.orderId = orderId;
-        this.date = date;
-        this.amount = amount;
-        this.time = time;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getChargingStationId() {
-        return chargingStationId;
-    }
-
-    public void setChargingStationId(Integer chargingStationId) {
-        this.chargingStationId = chargingStationId;
-    }
-
-    public Integer getChargingPieId() {
-        return chargingPieId;
-    }
-
-    public void setChargingPieId(Integer chargingPieId) {
-        this.chargingPieId = chargingPieId;
-    }
-
-    public String getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
-
-    public String getPayWay() {
-        return payWay;
-    }
-
-    public void setPayWay(String payWay) {
-        this.payWay = payWay;
-    }
-
-    public String getChargingTime() {
-        return chargingTime;
-    }
-
-    public void setChargingTime(String chargingTime) {
-        this.chargingTime = chargingTime;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    @Override
-    public String toString() {
-        return "Pay{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", chargingStationId=" + chargingStationId +
-                ", chargingPieId=" + chargingPieId +
-                ", serialNo='" + serialNo + '\'' +
-                ", payWay='" + payWay + '\'' +
-                ", chargingTime='" + chargingTime + '\'' +
-                ", orderId=" + orderId +
-                ", date=" + date +
-                ", amount=" + amount +
-                ", time='" + time + '\'' +
-                '}';
-    }
 }

@@ -1,6 +1,8 @@
 package org.example.imfutures.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.imfutures.pojo.Nav;
 import org.example.imfutures.service.NavigationService;
 import org.example.imfutures.utils.Result;
@@ -10,9 +12,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+@Tag(name = "导航")
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/IMFuture/navgation")
+@RequestMapping("/IMFuture/navigation")
 public class NavigationController {
 
     @Autowired
@@ -23,6 +27,7 @@ public class NavigationController {
      * @param uid
      * @return
      */
+    @Operation(summary = "查询历史导航")
     @GetMapping("/selectList")
     public Result selectList(@RequestParam("uid") Integer uid) {
         List<Nav> list = new ArrayList<>();
@@ -39,9 +44,11 @@ public class NavigationController {
      * @param nav
      * @return
      */
+    @Operation(summary = "添加历史导航")
     @PostMapping("/add")
     public Result add(@RequestBody Nav nav) {
         try {
+            System.out.println(nav.toString());
             service.insert(nav);
             return new Result(true, "添加成功");
         } catch (Exception e) {
@@ -54,7 +61,8 @@ public class NavigationController {
      * @param uid
      * @return
      */
-    @DeleteMapping("/{uid}")
+    @Operation(summary = "删除历史导航")
+    @DeleteMapping("/delete/{uid}")
     public Result delete(@PathVariable("uid") Integer uid) {
         try {
             service.delete(uid);

@@ -1,5 +1,7 @@
 package org.example.imfutures.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.imfutures.utils.Result;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,8 @@ import java.util.Random;
 /**
  * 获取验证码
  */
+
+@Tag(name = "获取验证码")
 @RestController
 @RequestMapping("/IMFuture")
 @CrossOrigin("*")
@@ -19,6 +23,7 @@ public class GetCode {
      * @param phone
      * @return
      */
+    @Operation(summary = "获取手机号验证码")
     @GetMapping("/code")
     public Result code(@RequestParam("phone") String phone){
         try {
@@ -35,6 +40,7 @@ public class GetCode {
      * @param email
      * @return
      */
+    @Operation(summary = "获取邮箱验证码")
     @GetMapping("/email")
     public Result email(@RequestParam("email") String email){
         try {

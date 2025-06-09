@@ -1,0 +1,25 @@
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: org.example.imfutures.controller   #这里换成你模块下controller包的路径
+
+# knife4j的增强配置，不需要增强可以不配（建议配置一下）
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: "智行未来bean管理"
+  production: false
+  cors: true
+#  basic:
+#    username: root
+#    password: 123456
+#    enable: true

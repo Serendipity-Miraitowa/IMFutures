@@ -157,4 +157,101 @@ public class UserServiceImpl implements UserService {
     public List<FreePay> selectNoPayList(Integer uid) {
         return mapper.selectNoPay(uid);
     }
+
+    /**
+     * 查询免密支付是否已存在
+     * @param id
+     * @param uid
+     * @return
+     */
+    @Override
+    public boolean hasFreePay(Integer id, Integer uid) {
+       return mapper.hasFreePay(id, uid);
+    }
+
+    /**
+     * 添加免密支付
+     * @param insert
+     */
+    @Override
+    public void addFreePay(FreePay insert) {
+        mapper.addFreePay(insert);
+    }
+
+    /**
+     * 取消免密支付
+     * @param id
+     */
+    @Override
+    public void deleteFreePay(Integer id) {
+        mapper.deleteFreePay(id);
+    }
+
+    /**
+     * 查询支付方式列表
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<UserPayWay> selectUserPayWay(Integer uid) {
+        return mapper.selectUserPayWay(uid);
+    }
+
+    /**
+     * 删除支付方式
+     * @param ids
+     */
+    @Override
+    public void deleteUserPayWay(List<Integer> ids) {
+        for (Integer id : ids) {
+            mapper.deleteUserPayWay(id);
+        }
+    }
+
+    /**
+     * 添加支付方式
+     * @param insert
+     */
+    @Override
+    public void insertPayWay(UserPayWay insert) {
+        List<UserPayWay> list = mapper.selectUserPayWay(insert.getUserId());
+        int sequence = 0;  //支付顺序设置
+        if (list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                sequence = list.get(i).getSequence();
+                if (i < list.size() - 1) {
+                    if (sequence < list.get(i+1).getSequence()){
+                        sequence = list.get(i+1).getSequence();
+                    }
+                }
+            }
+            sequence = sequence + 1;
+            insert.setSequence(sequence);
+            mapper.insertPayWay(insert);
+        }else {
+            sequence = sequence + 1;
+            insert.setSequence(sequence);
+            mapper.insertPayWay(insert);
+        }
+    }
+
+    /**
+     * 查询支付方式列表，按支付顺序排序
+     * @param uid
+     * @return
+     */
+    @Override
+    public List<UserPayWay> selectUserPayWayList(Integer uid) {
+        return mapper.selectUserPayWayList(uid);
+    }
+
+    /**
+     * 更新支付顺序
+     * @param id
+     * @param sequence
+     */
+    @Override
+    public void updateUserPayWay(Integer id, Integer sequence) {
+        mapper.updateUserPayWay(id, sequence);
+    }
 }

@@ -1,5 +1,7 @@
 package org.example.imfutures.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.imfutures.dto.loginAndRegister.Login;
 import org.example.imfutures.pojo.Users;
 import org.example.imfutures.service.LoginService;
@@ -7,6 +9,8 @@ import org.example.imfutures.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+@Tag(name = "登录注册")
 @RestController
 @RequestMapping("/IMFuture")
 @CrossOrigin("*")
@@ -20,6 +24,7 @@ public class LoginController {
      * @param login
      * @return
      */
+    @Operation(summary = "用户登录")
     @PostMapping("/login")
     public Result login(@RequestBody Login login){
         if (service.isHaveAccount(login)){
@@ -40,6 +45,7 @@ public class LoginController {
      * @param login
      * @return
      */
+    @Operation(summary = "注册")
     @PostMapping("/register")
     public Result register(@RequestBody Login login){
         try {
@@ -61,6 +67,7 @@ public class LoginController {
      * @param login
      * @return
      */
+    @Operation(summary = "修改密码")
     @PostMapping("/updatePassword")
     public Result updatePassword(@RequestBody Login login){
         try {

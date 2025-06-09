@@ -3,7 +3,7 @@ package org.example.imfutures.service.Impl;
 import org.example.imfutures.mapper.ShipMapper;
 import org.example.imfutures.pojo.ChargingPies;
 import org.example.imfutures.dto.Comments;
-import org.example.imfutures.dto.ChargingStations;
+import org.example.imfutures.pojo.ChargingStations;
 import org.example.imfutures.pojo.Order;
 import org.example.imfutures.pojo.Users;
 import org.example.imfutures.service.ShipService;
@@ -28,7 +28,6 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<ChargingStations> selectShip(String name) {
         List<ChargingStations> list = mapper.selectShip(name);
-        list = averageScore(list);
         return list;
     }
 
@@ -43,13 +42,22 @@ public class ShipServiceImpl implements ShipService {
     }
 
     /**
+     * 查询可用充电桩
+     * @param id
+     * @return
+     */
+    @Override
+    public List<ChargingPies> selectChargingPies(Integer id) {
+        return mapper.selectChargingPies(id);
+    }
+
+    /**
      * 按价格排序
      * @return
      */
     @Override
     public List<ChargingStations> selectShipByPrice() {
         List<ChargingStations> list = mapper.selectShipByPrice();
-        list = averageScore(list);
         //按价格升序排序，价格相同，按评分排序
         list.sort(Comparator.comparing(ChargingStations::getPrice).thenComparing(ChargingStations::getScore));
         return list;
@@ -62,7 +70,6 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<ChargingStations> selectShipByDistance() {
         List<ChargingStations> list = mapper.selectShipByDistance();
-        list = averageScore(list);
         //按距离升序排序，距离相同，按评分排序
         list.sort(Comparator.comparing(ChargingStations::getDistance).thenComparing(ChargingStations::getScore));
         return list;
@@ -75,7 +82,6 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<ChargingStations> selectShipByScore() {
         List<ChargingStations> list = mapper.selectShip("");
-        list = averageScore(list);
         //按评分降序排序，评分相同，按距离排序
         list.sort(Comparator.comparing(ChargingStations::getScore).reversed().thenComparing(ChargingStations::getDistance));
         return list;
@@ -88,7 +94,6 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public List<ChargingStations> selectShipBySynthesis() {
         List<ChargingStations> list = mapper.selectShip("");
-        list = averageScore(list);
         //先按距离排序，后按价格排序,再按评分排序
         list.sort(Comparator.comparing(ChargingStations::getDistance).thenComparing(ChargingStations::getPrice)
                 .thenComparing(ChargingStations::getScore).reversed());
@@ -121,6 +126,7 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public void insertOrder(Order order) {
         mapper.insertOrder(order);
+        mapper.updateStatus(order.getChargingPiesId(), 1);
     }
 
     /**
@@ -158,7 +164,7 @@ public class ShipServiceImpl implements ShipService {
      * @return
      */
     @Override
-    public List<Order> selectCompleteOrder(Integer id) {
+    public Order selectCompleteOrder(Integer id) {
         return mapper.selectCompleteOrder(id);
     }
 
@@ -169,6 +175,8 @@ public class ShipServiceImpl implements ShipService {
     @Override
     public void updateOrder(Integer id) {
         mapper.updateOrder(id);
+        Order order = mapper.selectOrderById(id);
+        mapper.updateStatus(order.getChargingPiesId(), 0);
     }
 
     /**
@@ -178,9 +186,7 @@ public class ShipServiceImpl implements ShipService {
      */
     @Override
     public ChargingStations selectChargingById(Integer id) {
-        ChargingStations charging = mapper.selectChargingById(id);
-        charging = averageScore(charging);
-        return charging;
+        return  mapper.selectChargingById(id);
     }
 
     /**
@@ -195,68 +201,13 @@ public class ShipServiceImpl implements ShipService {
 
     /**
      * 修改使用状态和预约状态为已完成
-     * @param uid
+     * @param id
      */
     @Override
-    public void updateOrderStatus(Integer uid) {
-        mapper.updateOrderStatus(uid);
+    public void updateOrderStatus(Integer id) {
+        mapper.updateOrderStatus(id);
+        Order order = mapper.selectOrderById(id);
+        mapper.updateStatus(order.getChargingPiesId(), 0);
     }
 
-    /**
-     * 计算平均分
-     * @param list
-     * @return
-     */
-    private List<ChargingStations> averageScore(List<ChargingStations> list) {
-        DecimalFormat df = new DecimalFormat("#.0");
-        for (ChargingStations chargingStation : list) {
-            Integer id = chargingStation.getId();
-            List<Comments> comments = mapper.comments(id);
-            double totalScore = 0;
-            int commentCount = 0;
-
-            for (Comments comment : comments) {
-                totalScore += comment.getScore();
-                commentCount++;
-            }
-
-            if (commentCount > 0) {
-                double averageScore = totalScore / commentCount;
-                averageScore = Double.parseDouble(df.format(averageScore));
-                chargingStation.setScore(averageScore);
-            } else {
-                // 如果没有评论，设置默认值， 0
-                chargingStation.setScore(0.0);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 计算单个充电站的平均分
-     * @param chargingStation
-     * @return
-     */
-    private ChargingStations averageScore(ChargingStations chargingStation){
-        DecimalFormat df = new DecimalFormat("#.0");
-        Integer id = chargingStation.getId();
-        List<Comments> comments = mapper.comments(id);
-        double totalScore = 0;
-        int commentCount = 0;
-
-        for (Comments comment : comments) {
-            totalScore += comment.getScore();
-            commentCount++;
-        }
-
-        if (commentCount > 0) {
-            double averageScore = totalScore / commentCount;
-            averageScore = Double.parseDouble(df.format(averageScore));
-            chargingStation.setScore(averageScore);
-        } else {
-            // 如果没有评论，设置默认值， 0
-            chargingStation.setScore(0.0);
-        }
-        return chargingStation;
-    }
 }

@@ -37,14 +37,24 @@
         </trim>
     </insert>
 
+    <!--直接添加用户id-->
+    <update id="updateUserId" parameterType="org.example.imfutures.dto.InsertCar">
+        update car set user_id = #{userId} where frame_number = #{frameNumber}
+    </update>
+
     <!--删除连接-->
-    <delete id="deleteCar" parameterType="java.lang.Integer">
+    <!--<delete id="deleteCar" parameterType="java.lang.Integer">
         delete from car where id = #{id}
-    </delete>
+    </delete>-->
+    <update id="deleteCar" parameterType="java.lang.Integer">
+        update car set user_id = 0 where id = #{id}
+    </update>
 
     <!--查询是否有车辆-->
     <select id="selectCarIsHaving" parameterType="java.lang.String" resultType="java.lang.Boolean">
         select exists(select 1 from car where frame_number = #{frameNumber})
     </select>
+
+
 
 </mapper>

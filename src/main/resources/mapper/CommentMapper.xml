@@ -12,9 +12,17 @@
         update `order` set comment_id = #{id} where id = #{orderId}
     </update>
 
-    <!---->
+    <!--查询用户评论-->
     <select id="selectByUserId" parameterType="java.lang.Integer" resultType="comments">
         select * from comments where user_id = #{id}
     </select>
+
+    <!--计算充电站平均分-->
+    <select id="selectShip" parameterType="java.lang.Integer" resultType="comments">
+        select * from comments where charging_station_id = #{id}
+    </select>
+    <update id="updateScore" parameterType="java.lang.Double">
+        update charging_stations set score = #{score} where id = #{id}
+    </update>
 
 </mapper>

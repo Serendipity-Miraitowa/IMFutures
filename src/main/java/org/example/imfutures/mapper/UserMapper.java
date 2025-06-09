@@ -1,8 +1,6 @@
 package org.example.imfutures.mapper;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.example.imfutures.dto.Cards;
 import org.example.imfutures.dto.UpdateUser;
 import org.example.imfutures.pojo.*;
@@ -99,5 +97,61 @@ public interface UserMapper {
      */
     FreePay selectNoPayDetail(Integer id);
 
+    /**
+     * 查询免密支付是否已存在
+     * @param id
+     * @param uid
+     * @return
+     */
+    boolean hasFreePay(Integer id, Integer uid);
+
+    /**
+     * 添加免密支付
+     * @param insert
+     */
+    void addFreePay(FreePay insert);
+
+    /**
+     * 取消免密支付
+     * @param id
+     */
+    void deleteFreePay(Integer id);
+
+    /**
+     * 查询支付方式列表
+     * @param uid
+     * @return
+     */
+    @Select("select * from user_pay_way where user_id = #{uid} order by id asc")
+    List<UserPayWay> selectUserPayWay(Integer uid);
+
+    /**
+     * 删除支付方式
+     * @param id
+     */
+    @Delete("delete from user_pay_way where id = #{id}")
+    void deleteUserPayWay(Integer id);
+
+    /**
+     * 添加支付方式
+     * @param insert
+     */
+    void insertPayWay(UserPayWay insert);
+
+    /**
+     * 查询支付方式列表，按支付顺序排序
+     * @param uid
+     * @return
+     */
+    @Select("select * from user_pay_way where user_id = #{uid} order by sequence asc")
+    List<UserPayWay> selectUserPayWayList(Integer uid);
+
+    /**
+     * 更新支付顺序
+     * @param id
+     * @param sequence
+     */
+    @Update("update user_pay_way set sequence = #{sequence} where id = #{id}")
+    void updateUserPayWay(Integer id, Integer sequence);
 
 }

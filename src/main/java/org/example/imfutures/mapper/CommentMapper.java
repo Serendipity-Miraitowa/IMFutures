@@ -1,9 +1,8 @@
 package org.example.imfutures.mapper;
 
-import org.apache.ibatis.annotations.Insert;
+
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+
 import org.example.imfutures.dto.Comments;
 import org.example.imfutures.dto.CommentsInsert;
 
@@ -30,4 +29,13 @@ public interface CommentMapper {
      * @return
      */
     List<Comments> selectByUserId(int id);
+
+    /**
+     * 计算充电站平均分
+     * @param id
+     * @return
+     */
+    List<org.example.imfutures.pojo.Comments> selectShip(int id);
+    void updateScore(Double score);
+
 }

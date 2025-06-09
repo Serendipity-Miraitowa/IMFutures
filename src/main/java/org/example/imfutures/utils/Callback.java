@@ -54,7 +54,7 @@ public class Callback implements MqttCallback {
     public void messageArrived(String topic, MqttMessage message) throws Exception {
         //  TODO    此处可以将订阅得到的消息进行业务处理、数据存储
         /*log.info("收到来自 " + topic + " 的消息：{}", new String(message.getPayload()));*/
-        System.out.println("收到来自 " + topic + " 的消息：" + new String(message.getPayload()));
+        System.out.println("收到来自: " + topic + " 的消息：" + new String(message.getPayload()));
 
         String payload = new String(message.getPayload());
         JsonObject json = new Gson().fromJson(payload, JsonObject.class);

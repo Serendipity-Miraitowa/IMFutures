@@ -24,6 +24,7 @@ public interface CarService {
      * @param car
      */
     void insertCar(InsertCar car);
+    void updateUserId(InsertCar car);
 
     /**
      * 删除车辆信息

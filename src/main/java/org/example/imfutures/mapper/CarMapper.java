@@ -1,8 +1,10 @@
 package org.example.imfutures.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.example.imfutures.dto.InsertCar;
 import org.example.imfutures.pojo.Car;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Mapper
@@ -21,6 +23,8 @@ public interface CarMapper {
      * @param car
      */
     void insertCar(Car car);
+    //第二种方法
+    void updateUserId(InsertCar car);
 
     /**
      * 删除车辆信息

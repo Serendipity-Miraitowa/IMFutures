@@ -32,10 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 
 @Service
@@ -124,6 +121,11 @@ public class CarServiceImpl implements CarService {
         }
     }
 
+    @Override
+    public void updateUserId(InsertCar car) {
+        mapper.updateUserId(car);
+    }
+
     /**
      * 断开设备连接
      *
@@ -132,12 +134,13 @@ public class CarServiceImpl implements CarService {
     @Override
     public void deleteCar(Integer[] id, String[] deviceIds) {
         for (int i = 0 ; i < id.length ; i++) {
-            System.out.println("id:"+id[i]);
-            System.out.println("设备ID："+deviceIds[i]);
             DeleteDeviceRequest request = new DeleteDeviceRequest();
             request.withDeviceId(deviceIds[i]);
             try {
-                DeleteDeviceResponse response = client.deleteDevice(request);
+                //删除云平台设备
+//                DeleteDeviceResponse response = client.deleteDevice(request);
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.delete("http://localhost:8080//IMFuture/device/disconnect/"+deviceIds[i]);
                 mapper.deleteCar(id[i]);
             } catch (ConnectionException | RequestTimeoutException | ServiceResponseException e) {
                 e.printStackTrace();
@@ -147,7 +150,6 @@ public class CarServiceImpl implements CarService {
 
     /**
      * 查询设备是否存在
-     *
      * @param frameNumber
      * @return
      */

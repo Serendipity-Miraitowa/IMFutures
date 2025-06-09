@@ -1,94 +1,27 @@
 package org.example.imfutures.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 //车辆实体类
 public class Car {
+    @Schema(name = "车辆id", example = "1")
     private Integer id;
+    @Schema(name = "车辆类型", example = "问界")
     private String type; //车辆类型
+    @Schema(name = "车辆vin号", example = "25918941561561561")
     private String frameNumber;  //车辆vin号
+    @Schema(name = "用户id", example = "1")
     private Integer userId; //用户id
+    @Schema(name = "状态", example = "true")
     private Integer status; //状态
+    @Schema(name = "云平台实例id", example = "25918941561561561_0_0_2025060614")
     private String clientId;  //实例id
+    @Schema(name = "云平台连接密码", example = "e9b7a89c2f3f3c01f59612ebbcce61671847101da27e5d14889ff1546e144eb1")
     private String password;  //密码
+    @Schema(name = "车辆图片", example = "http://aliyun.com/159631031/56156210236")
     private String img;
 
-    public Car() {
-    }
 
-    public Car(Integer id, String type, String frameNumber, Integer userId, Integer status, String clientId, String password, String img) {
-        this.id = id;
-        this.type = type;
-        this.frameNumber = frameNumber;
-        this.userId = userId;
-        this.status = status;
-        this.clientId = clientId;
-        this.password = password;
-        this.img = img;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getFrameNumber() {
-        return frameNumber;
-    }
-
-    public void setFrameNumber(String frameNumber) {
-        this.frameNumber = frameNumber;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
 }

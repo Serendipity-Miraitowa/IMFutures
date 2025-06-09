@@ -5,7 +5,7 @@
 <mapper namespace="org.example.imfutures.mapper.ShipMapper">
 
     <!--查询所有商店-->
-    <select id="selectShip" parameterType="java.lang.String" resultType="org.example.imfutures.dto.ChargingStations">
+    <select id="selectShip" parameterType="java.lang.String" resultType="chargingStations">
         select * from charging_stations
         <where>
             <if test="name != null and name.length != 0">

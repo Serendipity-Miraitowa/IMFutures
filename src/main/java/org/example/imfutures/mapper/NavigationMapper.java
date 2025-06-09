@@ -24,7 +24,7 @@ public interface NavigationMapper {
      * 添加历史导航
      * @param nav
      */
-    @Insert("insert into nav(address, date, user_id) values (#{userId}, #{address}, #{date})")
+    @Insert("insert into nav(address, date, user_id) values (#{address}, #{date}, #{userId})")
     void insert(Nav nav);
 
     /**

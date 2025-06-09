@@ -5,8 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 import org.example.imfutures.pojo.ChargingPies;
-import org.example.imfutures.dto.ChargingStations;
 import org.example.imfutures.dto.Comments;
+import org.example.imfutures.pojo.ChargingStations;
 import org.example.imfutures.pojo.Order;
 import org.example.imfutures.pojo.Users;
 
@@ -27,6 +27,21 @@ public interface ShipMapper {
      * @return
      */
     List<ChargingPies> selectPies(Integer id);
+
+    /**
+     * 查询可用充电桩
+     * @param id
+     * @return
+     */
+    @Select("select * from charging_pies where charging_station_id = #{id} and status = 0")
+    List<ChargingPies> selectChargingPies(Integer id);
+
+    /**
+     * 修改充电桩状态
+     * @param id
+     */
+    @Update("update charging_pies set status = #{status} where id = #{id}")
+    void updateStatus(Integer id, Integer status);
 
     /**
      * 按价格排序
@@ -78,7 +93,7 @@ public interface ShipMapper {
      * @param id
      * @return
      */
-    @Select("select * from `order` where user_id = #{id} and status = 0 order by id desc")
+    @Select("select * from `order` where user_id = #{id} and (status = 0 or (status = 2 and pay_status = 0)) order by id desc")
     List<Order> selectOrder(Integer id);
 
     /**
@@ -95,8 +110,8 @@ public interface ShipMapper {
      * @param id
      * @return
      */
-    @Select("select * from `order` where user_id = #{id} and status = 2 and use_status = 2 and pay_status = 1 order by id desc")
-    List<Order> selectCompleteOrder(Integer id);
+    @Select("select * from `order` where id = #{id} and status = 2 and use_status = 2 and pay_status = 1 order by id desc")
+    Order selectCompleteOrder(Integer id);
 
     /**
      * 取消预约订单
@@ -127,4 +142,12 @@ public interface ShipMapper {
      */
     @Update("update `order` set status = 2, use_status = 2 where id = #{id}")
     void updateOrderStatus(Integer id);
+
+    /**
+     * 查询订单
+     * @param id
+     * @return
+     */
+    @Select("select * from `order` where id = #{id}")
+    Order selectOrderById(Integer id);
 }

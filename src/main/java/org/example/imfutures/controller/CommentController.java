@@ -2,6 +2,8 @@ package org.example.imfutures.controller;
 
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.imfutures.dto.Comments;
 import org.example.imfutures.dto.CommentsInsert;
 import org.example.imfutures.service.CommentService;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "评论管理")
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/IMFuture/comments")
@@ -25,6 +28,7 @@ public class CommentController {
      * @param uid
      * @return
      */
+    @Operation(summary = "查询用户所有评论")
     @GetMapping("/myComments")
     public Result commentList(@RequestParam("uid") Integer uid){
         List<Comments> list = new ArrayList<>();
@@ -41,6 +45,7 @@ public class CommentController {
      * @param comment
      * @return
      */
+    @Operation(summary = "添加评论")
     @PostMapping("/addComment")
     public Result addComment(@RequestBody CommentsInsert comment){
         try {

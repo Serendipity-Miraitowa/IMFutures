@@ -2,11 +2,11 @@ package org.example.imfutures.service;
 
 
 
-import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.example.imfutures.pojo.ChargingPies;
-import org.example.imfutures.dto.ChargingStations;
 import org.example.imfutures.dto.Comments;
+import org.example.imfutures.pojo.ChargingStations;
 import org.example.imfutures.pojo.Order;
 
 import java.util.List;
@@ -25,6 +25,13 @@ public interface ShipService {
      * @return
      */
     List<ChargingPies> selectPies(Integer id);
+
+    /**
+     * 查询可用充电桩
+     * @param id
+     * @return
+     */
+    List<ChargingPies> selectChargingPies(Integer id);
 
     /**
      * 按价格排序
@@ -92,7 +99,7 @@ public interface ShipService {
      * @param id
      * @return
      */
-    List<Order> selectCompleteOrder(Integer id);
+    Order selectCompleteOrder(Integer id);
 
     /**
      * 取消预约订单

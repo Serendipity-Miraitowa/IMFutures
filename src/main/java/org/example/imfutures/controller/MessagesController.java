@@ -1,5 +1,7 @@
 package org.example.imfutures.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.imfutures.pojo.Message;
 import org.example.imfutures.service.MessageService;
 import org.example.imfutures.utils.Result;
@@ -10,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Tag(name = "消息管理")
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/IMFuture/message")
@@ -23,6 +26,7 @@ public class MessagesController {
      * @param uid
      * @return
      */
+    @Operation(summary = "查询已阅读消息")
     @GetMapping("/messageList")
     public Result messageList(@RequestParam("uid") Integer uid) {
         List<Message> messages = new ArrayList<>();
@@ -39,6 +43,7 @@ public class MessagesController {
      * @param uid
      * @return
      */
+    @Operation(summary = "查询未阅读消息")
     @GetMapping("/messageNoReadList")
     public Result messageNoReadList(@RequestParam("uid") Integer uid) {
         List<Message> messages = new ArrayList<>();
@@ -57,6 +62,7 @@ public class MessagesController {
      * @param uid
      * @return
      */
+    @Operation(summary = "更新状态")
     @PutMapping("/read")
     public Result read(@RequestParam("uid") Integer uid, @RequestParam("id") Integer id) {
         try {
@@ -72,10 +78,10 @@ public class MessagesController {
      * @param uid
      * @return
      */
+    @Operation(summary = "批量阅读")
     @PutMapping("/readAll")
     public Result readAll(@RequestParam("uid") Integer uid) {
         try {
-            System.out.println("用户id："+uid);
             service.updateMessageAll(uid);
             return new Result(true, "查询成功");
         } catch (Exception e) {

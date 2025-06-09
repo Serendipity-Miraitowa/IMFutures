@@ -1,95 +1,35 @@
 package org.example.imfutures.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.util.Date;
 
+
+@Data
+@Schema(name = "添加评论实体")
 public class CommentsInsert {
+
+    @Schema(name = "评论id", description = "评论唯一标识符", example = "1")
     private Integer id;
+
+    @Schema(name = "订单id", description = "关联订单id", example = "1")
     private Integer orderId; //订单id
+
+    @Schema(name = "评论内容", description = "评论内容", example = "充电速度非常快")
     private String content;
+
+    @Schema(name = "评论日期", description = "评论日期", example = "2025-06-04")
     private Date date;
+
+    @Schema(name = "评分", description = "评分", example = "2.6")
     private Double score;
+
+    @Schema(name = "用户id", description = "关联用户id", example = "1")
     private Integer userId;
+
+    @Schema(name = "充电站id", description = "评论的关联充电站", example = "1")
     private Integer chargingStationId;
 
-    public CommentsInsert() {
-    }
 
-    public CommentsInsert(Integer id, Integer orderId, String content, Date date, Double score, Integer userId, Integer chargingStationId) {
-        this.id = id;
-        this.orderId = orderId;
-        this.content = content;
-        this.date = date;
-        this.score = score;
-        this.userId = userId;
-        this.chargingStationId = chargingStationId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public void setScore(Double score) {
-        this.score = score;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public Integer getChargingStationId() {
-        return chargingStationId;
-    }
-
-    public void setChargingStationId(Integer chargingStationId) {
-        this.chargingStationId = chargingStationId;
-    }
-
-    @Override
-    public String toString() {
-        return "CommentsInsert{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", content='" + content + '\'' +
-                ", date=" + date +
-                ", score=" + score +
-                ", userId=" + userId +
-                ", chargingStationId=" + chargingStationId +
-                '}';
-    }
 }

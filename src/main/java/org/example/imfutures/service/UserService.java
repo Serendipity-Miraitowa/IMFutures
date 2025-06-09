@@ -1,10 +1,12 @@
 package org.example.imfutures.service;
 
+
 import org.example.imfutures.dto.Cards;
 import org.example.imfutures.dto.UpdateUser;
+import org.example.imfutures.mapper.UserMapper;
 import org.example.imfutures.pojo.*;
 
-import java.util.HashMap;
+
 import java.util.List;
 
 public interface UserService {
@@ -80,4 +82,59 @@ public interface UserService {
      * @return
      */
     List<FreePay> selectNoPayList(Integer uid);
+
+    /**
+     * 查询免密支付是否已存在
+     * @param id
+     * @param uid
+     * @return
+     */
+    boolean hasFreePay(Integer id, Integer uid);
+
+    /**
+     * 添加免密支付
+     * @param insert
+     */
+    void addFreePay(FreePay insert);
+
+    /**
+     * 取消免密支付
+     * @param id
+     */
+    void deleteFreePay(Integer id);
+
+    /**
+     * 查询支付方式列表
+     * @param uid
+     * @return
+     */
+    List<UserPayWay> selectUserPayWay(Integer uid);
+
+    /**
+     * 删除支付方式
+     * @param ids
+     */
+    void deleteUserPayWay(List<Integer> ids);
+
+    /**
+     * 添加支付方式
+     * @param insert
+     */
+    void insertPayWay(UserPayWay insert);
+
+    /**
+     * 查询支付方式列表，按支付顺序排序
+     * @param uid
+     * @return
+     */
+    List<UserPayWay> selectUserPayWayList(Integer uid);
+
+    /**
+     * 更新支付顺序
+     * @param id
+     * @param sequence
+     */
+    void updateUserPayWay(Integer id, Integer sequence);
+
+
 }

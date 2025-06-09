@@ -1,6 +1,8 @@
 package org.example.imfutures.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.example.imfutures.dto.CheckProperties;
@@ -8,24 +10,27 @@ import org.example.imfutures.dto.Properties;
 import org.example.imfutures.pojo.DeviceConnect;
 import org.example.imfutures.utils.Callback;
 import org.example.imfutures.utils.MQTTConnectUtils;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
+@Tag(name = "虚拟设备")
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/IMFuture/device")
 public class VirtualDeviceController {
 
+    private static final Map<String, MQTTConnectUtils> connections = new ConcurrentHashMap<>();
     //基础属性
     Properties properties = new Properties(false,false,true,false,false,false,false,false,false,false,false,"湖北省武汉市洪山区关山大道凌家山北路456号",23,60,43510,326,261,32);
     //检查属性
     CheckProperties check = new CheckProperties(true,true,true,true,true,true,true,true,true,false,32.8,30.6);
-    MQTTConnectUtils mqttConnectUtils = new MQTTConnectUtils();
-    MqttCallback callback = new Callback();
 
 
 
@@ -35,18 +40,38 @@ public class VirtualDeviceController {
      * @param device
      * @return
      */
+    @Operation(summary = "设备连接云平台")
     @PostMapping("/connect")
     public String connect(@RequestBody DeviceConnect device) {
         try {
+            // 移除旧连接（如果存在）
+            disconnectIfExists(device.getDeviceId());
+            MQTTConnectUtils utils = new MQTTConnectUtils();
             //连接平台
-            mqttConnectUtils.connect(device.getClientId(), device.getPassword(), device.getDeviceId(), callback);
+            utils.connect(device.getClientId(), device.getPassword(), device.getDeviceId(), new Callback());
+            //存储连接
+            connections.put(device.getDeviceId(), utils);
             //设备属性上报
-            mqttConnectUtils.publish("$oc/devices/"+device.getDeviceId()+"/sys/properties/report", properties, "Base");
-            mqttConnectUtils.publish("$oc/devices/"+device.getDeviceId()+"/sys/properties/report", check, "Check");
+            utils.publish("$oc/devices/"+device.getDeviceId()+"/sys/properties/report", properties, "Base");
+            utils.publish("$oc/devices/"+device.getDeviceId()+"/sys/properties/report", check, "Check");
             return "设备连接成功";
         } catch (MqttException e) {
             e.printStackTrace();
             return "设备连接失败";
+        }
+    }
+
+    //如果存在则断开连接
+    private void disconnectIfExists(String deviceId) {
+        if (connections.containsKey(deviceId)) {
+            try {
+                connections.get(deviceId).close();
+                connections.remove(deviceId);
+            } catch (Exception e) {
+                connections.remove(deviceId);
+                // 忽略关闭异常
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -55,26 +80,41 @@ public class VirtualDeviceController {
      * 获取属性数据
      * @return
      */
+    @Operation(summary = "获取属性数据")
     @GetMapping("/property")
     public ResponseEntity<String> getProperty(@RequestParam("topic") String topic, @RequestParam("serviceId") String serviceId, @RequestParam("deviceId") String deviceId) {
 
+        MQTTConnectUtils utils = connections.get(deviceId);
+        if (utils != null && !utils.isConnected()){
+            return ResponseEntity.status(403).body("设备未连接或连接已断开");
+        }
         try {
             if (serviceId.equals("Base")){
                 //设备属性上报
-                mqttConnectUtils.publish(topic, properties, serviceId);
-                mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
-                mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
+                utils.publish(topic, properties, serviceId);
+                utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
+                utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
                 return ResponseEntity.ok().body("获取Base属性数据成功");
             }else if (serviceId.equals("Check")){
-                mqttConnectUtils.publish(topic, check, serviceId);
-                mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
-                mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
+                utils.publish(topic, check, serviceId);
+                utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
+                utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
                 return ResponseEntity.ok().body("获取Check属性数据成功");
             }
         } catch (MqttException e) {
             e.printStackTrace();
+            return ResponseEntity.status(500)
+                    .body("MQTT错误: " + e.getMessage());
         }
         return ResponseEntity.badRequest().body("获取属性数据失败");
+    }
+
+    // 断开连接接口
+    @Operation(summary = "断开连接接口")
+    @DeleteMapping("/disconnect/{deviceId}")
+    public String disconnect(@PathVariable String deviceId) {
+        disconnectIfExists(deviceId);
+        return "设备已断开";
     }
 
 
@@ -82,8 +122,13 @@ public class VirtualDeviceController {
      * 执行命令
      * @return
      */
+    @Operation(summary = "执行命令")
     @GetMapping("/command")
     public ResponseEntity<String> setCommand(@RequestParam("topic") String topic, @RequestParam("data") String data, @RequestParam("values") String values, @RequestParam("deviceId") String deviceId){
+        MQTTConnectUtils utils = connections.get(deviceId);
+        if (utils != null && !utils.isConnected()){
+            return ResponseEntity.status(403).body("设备未连接或连接已断开");
+        }
         try {
             switch (data) {
                 case "空调开启":
@@ -187,11 +232,11 @@ public class VirtualDeviceController {
                     System.out.println("未知的控制命令: " + data);
                     break;
             }
-            mqttConnectUtils.publishCommand(topic);
+            utils.publishCommand(topic);
             //上报消息
-            mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
+            utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", properties, "Base");
             System.out.println("上报消息成功");
-            mqttConnectUtils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
+            utils.publish("$oc/devices/"+deviceId+"/sys/properties/report", check, "Check");
             return ResponseEntity.ok().body("命令执行成功");
         } catch (MqttException e) {
             e.printStackTrace();

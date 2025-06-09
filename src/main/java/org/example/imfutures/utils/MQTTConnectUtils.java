@@ -18,6 +18,11 @@ public class MQTTConnectUtils {
 
     MqttClient client;
 
+    public boolean isConnected() {
+        return client != null && client.isConnected();
+    }
+
+
     /**
      * 客户端连接华为云平台
      * @param clientId
@@ -33,6 +38,7 @@ public class MQTTConnectUtils {
         options.setUserName(username);
         options.setPassword(password.toCharArray());
         options.setAutomaticReconnect(true);
+        options.setKeepAliveInterval(30);
         if (callback == null){
             client.setCallback(new Callback());
         }else {
@@ -58,11 +64,15 @@ public class MQTTConnectUtils {
      * @throws MqttException
      */
     public void publish(String topic, String message) throws MqttException {
-        MqttMessage mqttMessage = new MqttMessage();
-        mqttMessage.setPayload(message.getBytes(StandardCharsets.UTF_8));
-        MqttTopic top = client.getTopic(topic);
-        MqttDeliveryToken token = top.publish(mqttMessage);
-        token.waitForCompletion();
+        if (!isConnected()) {
+            throw new IllegalStateException("MQTT client 没有连接");
+        }else {
+            MqttMessage mqttMessage = new MqttMessage();
+            mqttMessage.setPayload(message.getBytes(StandardCharsets.UTF_8));
+            MqttTopic top = client.getTopic(topic);
+            MqttDeliveryToken token = top.publish(mqttMessage);
+            token.waitForCompletion();
+        }
     }
 
     /**
@@ -72,11 +82,15 @@ public class MQTTConnectUtils {
      * @throws MqttException
      */
     public void publish(String topic, Object o) throws MqttException {
-        MqttMessage message = new MqttMessage();
-        message.setPayload(o.toString().getBytes(StandardCharsets.UTF_8));
-        MqttTopic top = client.getTopic(topic);
-        MqttDeliveryToken token = top.publish(message);
-        token.waitForCompletion();
+        if (!isConnected()) {
+            throw new IllegalStateException("MQTT client 没有连接");
+        }else {
+            MqttMessage message = new MqttMessage();
+            message.setPayload(o.toString().getBytes(StandardCharsets.UTF_8));
+            MqttTopic top = client.getTopic(topic);
+            MqttDeliveryToken token = top.publish(message);
+            token.waitForCompletion();
+        }
     }
 
     /**
@@ -86,12 +100,16 @@ public class MQTTConnectUtils {
      * @throws MqttException
      */
     public void publishJSON(String topic, Object o) throws MqttException {
-        MqttMessage message = new MqttMessage();  //封装要发布的消息
-        JsonObject json = new Gson().toJsonTree(o).getAsJsonObject();  //将对象转化为json对象
-        message.setPayload(json.toString().getBytes(StandardCharsets.UTF_8));  //设置消息内容为JSON字符串的字节数组，StandardCharsets.UTF_8:明确指定UTF-8编码
-        MqttTopic top = client.getTopic(topic);  //获取要发布的主题
-        MqttDeliveryToken token = top.publish(message);
-        token.waitForCompletion();  //等待消息发布完成。这会阻塞当前线程，直到消息发布完成或超时
+        if (!isConnected()) {
+            throw new IllegalStateException("MQTT client 没有连接");
+        }else {
+            MqttMessage message = new MqttMessage();  //封装要发布的消息
+            JsonObject json = new Gson().toJsonTree(o).getAsJsonObject();  //将对象转化为json对象
+            message.setPayload(json.toString().getBytes(StandardCharsets.UTF_8));  //设置消息内容为JSON字符串的字节数组，StandardCharsets.UTF_8:明确指定UTF-8编码
+            MqttTopic top = client.getTopic(topic);  //获取要发布的主题
+            MqttDeliveryToken token = top.publish(message);
+            token.waitForCompletion();  //等待消息发布完成。这会阻塞当前线程，直到消息发布完成或超时
+        }
     }
 
 
@@ -102,21 +120,25 @@ public class MQTTConnectUtils {
      * @param serviceId  //服务id
      */
     public void publish(String topic, Object o, String serviceId) throws MqttException {
-        MqttMessage message = new MqttMessage();
-        JsonObject json = new Gson().toJsonTree(o).getAsJsonObject();
-        JsonObject service = new JsonObject();
-        service.addProperty("serviceId", serviceId);
-        service.addProperty("eventTime", formatIsoTime(new Timestamp(System.currentTimeMillis())));  //时间戳
-        service.add("properties", json);
-        JsonArray jsonArray = new JsonArray();
-        jsonArray.add(service);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("services", jsonArray);
+        if (!isConnected()) {
+            throw new IllegalStateException("MQTT client 没有连接");
+        }else {
+            MqttMessage message = new MqttMessage();
+            JsonObject json = new Gson().toJsonTree(o).getAsJsonObject();
+            JsonObject service = new JsonObject();
+            service.addProperty("serviceId", serviceId);
+            service.addProperty("eventTime", formatIsoTime(new Timestamp(System.currentTimeMillis())));  //时间戳
+            service.add("properties", json);
+            JsonArray jsonArray = new JsonArray();
+            jsonArray.add(service);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.add("services", jsonArray);
 
-        message.setPayload(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
-        MqttTopic top = client.getTopic(topic);
-        MqttDeliveryToken token = top.publish(message);
-        token.waitForCompletion();
+            message.setPayload(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
+            MqttTopic top = client.getTopic(topic);
+            MqttDeliveryToken token = top.publish(message);
+            token.waitForCompletion();
+        }
     }
 
     /**

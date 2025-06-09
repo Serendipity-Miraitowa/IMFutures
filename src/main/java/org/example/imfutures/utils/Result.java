@@ -1,12 +1,20 @@
 package org.example.imfutures.utils;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
+@Schema(name = "响应信息实体")
 public class Result {
+
+    @Schema(name = "响应状态", description = "响应状态", required = true, example = "true")
     private boolean success;
+
+    @Schema(name = "响应消息", description = "响应消息", required = true, example = "获取成功")
     private String messages;
+
+    @Schema(name = "响应数据", description = "响应数据", required = true, example = "[{uid:1,username:'李白'}]")
     private Object data;
 
     public Result(boolean success, String messages, Object data) {

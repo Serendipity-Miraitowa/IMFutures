@@ -1,73 +1,31 @@
 package org.example.imfutures.pojo;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+
 import java.sql.Time;
 
+
+@Data
+@Schema(name = "用户免密支付实体")
 public class FreePay {
 
+    @Schema(name = "免密支付id", description = "免密支付唯一标识", example = "1")
     private Integer id;
+
+    @Schema(name = "充电站", description = "关联充电站", example = "1")
     private Integer chargingStationId;
+
+    @Schema(name = "免密支付单号", description = "开通免密支付单号", example = "4598415641489456")
     private String serialNo;
-    private Time time;
+
+    @Schema(name = "开通时间", description = "开通时间", example = "16:05:36")
+    private String time;
+
+    @Schema(name = "商家账号", description = "商家账号", example = "48951256")
     private String account;
+
+    @Schema(name = "用户id", description = "用户关联id", example = "1")
     private Integer userId;
 
-    public FreePay() {
-    }
-
-    public FreePay(Integer id, Integer chargingStationId, String serialNo, Time time, String account, Integer userId) {
-        this.id = id;
-        this.chargingStationId = chargingStationId;
-        this.serialNo = serialNo;
-        this.time = time;
-        this.account = account;
-        this.userId = userId;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getChargingStationId() {
-        return chargingStationId;
-    }
-
-    public void setChargingStationId(Integer chargingStationId) {
-        this.chargingStationId = chargingStationId;
-    }
-
-    public String getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
-
-    public Time getTime() {
-        return time;
-    }
-
-    public void setTime(Time time) {
-        this.time = time;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 }

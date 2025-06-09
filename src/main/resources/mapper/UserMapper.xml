@@ -120,6 +120,42 @@
         select * from free_pay where id = #{id}
     </select>
 
+    <!--查询免密支付是否已存在-->
+    <select id="hasFreePay" parameterType="java.lang.Integer" resultType="java.lang.Boolean">
+        select exists(select id from free_pay where charging_station_id = #{id} and user_id = #{uid})
+    </select>
 
+    <!--添加免密支付-->
+    <insert id="addFreePay" parameterType="freePay">
+        insert into free_pay(charging_station_id, serial_no, time, account, user_id) values (#{chargingStationId}, #{serialNo}, #{time}, #{account}, #{userId})
+    </insert>
+
+    <!--取消免密支付-->
+    <delete id="deleteFreePay" parameterType="java.lang.Integer">
+        delete from free_pay where id = #{id}
+    </delete>
+
+    <!--添加支付方式-->
+    <insert id="insertPayWay" parameterType="userPayWay">
+        insert into user_pay_way
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+        user_id,
+        name,
+        number,
+        <if test="type != null and type.length>0">
+            type,
+        </if>
+        sequence,
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            #{userId},
+            #{name},
+            #{number},
+            <if test="type != null and type.length>0">
+                #{type},
+            </if>
+            #{sequence}
+        </trim>
+    </insert>
 
 </mapper>
