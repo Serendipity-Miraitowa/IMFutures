@@ -42,10 +42,10 @@ public class CarServiceImpl implements CarService {
     CarMapper mapper;
 
     //参数设置暂时写在代码里
-    private static final String ak = "HPUAKUVCFBBGOVHLURA7";
-    private static final String sk = "97hdkUcs5e4q7ruBKbytXuGXUs2xCgbTb4x1cZ3c";
+    private static final String ak = "";
+    private static final String sk = "";
     // ENDPOINT：请在控制台的"总览"界面的"平台接入地址"中查看“应用侧”的https接入地址。
-    private static final String iotdaEndpoint = "99fbda0a9a.st1.iotda-app.cn-north-4.myhuaweicloud.com";
+    private static final String iotdaEndpoint = ";
     //地区
     private static final String region = "cn-north-4";
 
